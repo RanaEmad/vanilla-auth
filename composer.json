@@ -1,0 +1,20 @@
+{
+  "name": "ranaemad/vanilla-auth",
+  "description": "A basic CRUD authentication app implemented with vanilla PHP",
+  "autoload": {
+    "psr-4": {
+      "VanillaAuth\\": "app/"
+    }
+  },
+  "require": {
+    "phpunit/phpunit": "^9.1",
+    "vlucas/phpdotenv": "^4.1"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rana Emad",
+      "email": "rana3emad@gmail.com"
+    }
+  ]
+}
