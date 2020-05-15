@@ -1,6 +1,7 @@
 <?php
-require "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
-//loading the .env variables
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
+use VanillaAuth\Core\Router;
+
+require "bootstrap.php";
+
+Router::loadRoute();
