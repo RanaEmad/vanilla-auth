@@ -42,18 +42,16 @@ class Router
         foreach (self::$routes[$requestMethod] as $route => $function) {
 
             $pattern =  RouteParser::construcRoutetPattern($route);
-           
+
             if (preg_match($pattern, $uri, $macthes)) {
                 $controller = RouteParser::getController($function);
                 $method = RouteParser::getMethod($function);
                 $args = RouteParser::getArgs($route, $uri);
-
                 $className = "\\VanillaAuth\\Controllers\\$controller";
                 $cont = new $className;
                 if (count($args) > 0) {
                     $cont->{$method}(...$args);
-                }
-                else{
+                } else {
                     $cont->{$method}();
                 }
             }
