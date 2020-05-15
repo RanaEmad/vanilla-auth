@@ -54,9 +54,13 @@ class MysqlModel
         $result = $stmt->fetch($this->fetchType);
         return $result;
     }
-    public function getAll()
+    public function getAll($offset = NULL, $rows = NULL)
     {
-        $query = "SELECT * FROM " . $this->table . " ;";
+        if ($offset!==NULL && $rows!==NULL) {
+            $query = "SELECT * FROM " . $this->table . " LIMIT $offset,$rows ;";
+        } else {
+            $query = "SELECT * FROM " . $this->table . " ;";
+        }
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll($this->fetchType);

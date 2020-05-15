@@ -37,6 +37,11 @@ class Router
         $scriptName = trim(trim($_SERVER["SCRIPT_NAME"], basename($_SERVER["SCRIPT_NAME"])), "/");
         $uri = trim($_SERVER["REQUEST_URI"], "/");
         $uri = trim(str_replace($scriptName, "", $uri), "/");
+        $queryPos = strpos($uri, "?");
+        //remove query string
+        if ($queryPos !== false) {
+            $uri = substr($uri, 0, $queryPos);
+        }
 
         $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
         foreach (self::$routes[$requestMethod] as $route => $function) {

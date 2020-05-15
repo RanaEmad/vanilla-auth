@@ -18,4 +18,10 @@ class User extends MysqlModel
         $result = $this->fetchOne($query);
         return $result;
     }
+
+    public function countUsers(){
+        $query = "SELECT COUNT(*) as count FROM users ; ";
+        $result = $this->fetchOne($query);
+        return $result;
+    }
 }
