@@ -10,11 +10,13 @@ class MysqlModel
     protected $db;
     protected $table;
     protected $primaryKey;
-    public function __construct($dbConnection, $table, $primaryKey = "id")
+    protected $fetchType;
+    public function __construct($dbConnection, $table, $primaryKey = "id", $fetchType = "FETCH_OBJ")
     {
         $this->db = $dbConnection;
         $this->table = $table;
         $this->primaryKey = $primaryKey;
+        $this->fetchType = constant("PDO::$fetchType");
     }
     public function insert($data)
     {
@@ -49,7 +51,7 @@ class MysqlModel
         $query = "SELECT * FROM " . $this->table . " WHERE id=" . $id . " and deleted!=1 ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch($this->fetchType);
         return $result;
     }
     public function getAll()
@@ -57,12 +59,33 @@ class MysqlModel
         $query = "SELECT * FROM " . $this->table . " ;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll($this->fetchType);
     }
     public function delete($id)
     {
         $query = "DELETE FROM " . $this->table . " WHERE id=" . $id . ";";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
+    }
+
+    protected function execute($query)
+    {
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+        return $stmt;
+    }
+    protected function fetchAll($query)
+    {
+        $stmt = $this->execute($query);
+        return $stmt->fetchAll($this->fetchType);
+    }
+    protected function fetchOne($query)
+    {
+        $stmt = $this->execute($query);
+        $result = $stmt->fetchAll($this->fetchType);
+        if (count($result) > 0) {
+            return $result[0];
+        }
+        return false;
     }
 }
