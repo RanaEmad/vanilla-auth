@@ -4,7 +4,7 @@ namespace VanillaAuth\Core;
 
 class Session
 {
-    
+
 
     public static function start()
     {
@@ -26,9 +26,15 @@ class Session
     }
     public static function getKey($key)
     {
-        pd($_SESSION);
         if (array_key_exists($key, $_SESSION)) {
             return $_SESSION[$key];
+        }
+        return false;
+    }
+    public static function unsetKey($key)
+    {
+        if (array_key_exists($key, $_SESSION)) {
+            unset($_SESSION[$key]);
         }
         return false;
     }

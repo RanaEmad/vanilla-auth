@@ -31,7 +31,8 @@ class AuthController
         $validation->validate();
         if ($validation->fails()) {
             $errors = $validation->errors();
-            print_r($errors->firstOfAll());
+            Session::setKey("validationErrors", $errors->firstOfAll());
+            redirect("users/auth/login");
         } else {
             $user = $this->userModel->getUserByEmail(Request::post("email"));
             if (!$user) {
@@ -52,7 +53,7 @@ class AuthController
                     "logged" => true
                 ];
                 Session::set($userData);
-                redirect("users/profile");
+                redirect("users/$user->id");
             }
             //set error invalid credentials
             Session::setKey("error", "Invalid Credentials");

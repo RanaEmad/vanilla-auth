@@ -5,6 +5,7 @@ use VanillaAuth\Core\Loader;
 Loader::view("layout/header");
 ?>
 <div class="container">
+    <?= flashValidationErrors() ?>
     <h1 class="mb-4 text-secondary">Edit User</h1>
     <form action="<?= baseUrl("users/$user->id") ?>" method="POST">
         <input type="hidden" name="_method" value="PUT" />

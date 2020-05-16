@@ -5,6 +5,7 @@ use VanillaAuth\Core\Loader;
 Loader::view("layout/header");
 ?>
 <div class="container">
+<?=flashValidationErrors()?>
 <h1 class="mb-4 text-secondary">Reset Password</h1>
     <form action="<?= baseUrl("users/auth/resetPassword/$id") ?>" method="POST">
         <input type="hidden" name="_method" value="PUT" />

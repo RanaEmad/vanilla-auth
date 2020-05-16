@@ -5,7 +5,6 @@ use VanillaAuth\Core\Loader;
 Loader::view("layout/header");
 ?>
 <div class="container">
-
     <div class="card bg-light mb-3">
         <h5 class="card-header text-uppercase text-secondary">Profile</h5>
         <div class="card-body">

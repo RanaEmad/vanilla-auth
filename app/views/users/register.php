@@ -5,6 +5,7 @@ use VanillaAuth\Core\Loader;
 Loader::view("layout/header");
 ?>
 <div class="container">
+<?=flashValidationErrors()?>
 <h1 class="mb-4 text-secondary">Register</h1>
     <form action="<?= baseUrl("users/auth/register") ?>" method="POST">
         <div class="form-group">

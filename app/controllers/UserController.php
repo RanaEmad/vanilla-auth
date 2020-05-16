@@ -52,7 +52,8 @@ class UserController
         $validation->validate();
         if ($validation->fails()) {
             $errors = $validation->errors();
-            print_r($errors->firstOfAll());
+            Session::setKey("validationErrors", $errors->firstOfAll());
+            redirect("users/auth/register");
         } else {
             $data = [
                 "firstname" => Request::post("firstname"),
@@ -60,8 +61,19 @@ class UserController
                 "email" => Request::post("email"),
                 "password" => password_hash(Request::post("password"), PASSWORD_DEFAULT)
             ];
-            $this->userModel->insert($data);
-            redirect("users/auth/register");
+            $id = $this->userModel->insert($data);
+            //set session
+            $userData = [
+                "id" => $id,
+                "firstname" => $data["firstname"],
+                "lastname" => $data["lastname"],
+                "email" => $data["email"],
+                "logged" => true
+            ];
+            Session::set($userData);
+
+            Session::setKey("success", "Account created successfully!");
+            redirect("users/$id");
         }
     }
 
@@ -82,7 +94,8 @@ class UserController
         $validation->validate();
         if ($validation->fails()) {
             $errors = $validation->errors();
-            print_r($errors->firstOfAll());
+            Session::setKey("validationErrors", $errors->firstOfAll());
+            redirect("users/$id/edit");
         } else {
             $data = [
                 "firstname" => Request::put("firstname"),
@@ -90,7 +103,8 @@ class UserController
                 "email" => Request::put("email")
             ];
             $this->userModel->update($id, $data);
-            redirect("users/m/profile");
+            Session::setKey("success", "Data updated successfully!");
+            redirect("users/$id");
         }
     }
 
@@ -120,6 +134,7 @@ class UserController
             "disabled" => Request::put("disabled")
         ];
         $this->userModel->update($id, $data);
+        Session::setKey("success", "Account updated successfully!");
         redirect("users");
     }
 
@@ -139,7 +154,8 @@ class UserController
         $validation->validate();
         if ($validation->fails()) {
             $errors = $validation->errors();
-            print_r($errors->firstOfAll());
+            Session::setKey("validationErrors", $errors->firstOfAll());
+            redirect("users/$id");
         } else {
             $user = $this->userModel->getOne($id);
             if (password_verify(Request::put("oldPassword"), $user->password)) {
@@ -148,6 +164,7 @@ class UserController
                     "password" => password_hash(Request::put("newPassword"), PASSWORD_DEFAULT)
                 ];
                 $this->userModel->update($user->id, $data);
+                Session::setKey("success", "Password updated successfully!");
                 redirect("users/profile");
             } else {
                 Session::setKey("error", "Your old password didn't match");
