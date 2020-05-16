@@ -74,6 +74,7 @@ class Pagination
         } else {
             $links["previous"] = "";
         }
+        $links["current"]=$currentPage;
 
         return $links;
     }

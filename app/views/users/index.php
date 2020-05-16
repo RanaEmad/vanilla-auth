@@ -4,56 +4,94 @@ use VanillaAuth\Core\Loader;
 
 Loader::view("layout/header");
 ?>
-<div class="content">
-    <table>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            foreach ($users as $user) {
-            ?>
+<div class="container">
+    <h1 class="mb-4 text-secondary">Users</h1>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td><?= $user->firstname ?></td>
-                    <td><?= $user->lastname ?></td>
-                    <td><?= $user->email ?></td>
-                    <td>
-                        <?php
-                        if ($user->disabled) {
-                        ?>
-                            <a href="<?= baseUrl("users/toggleAccount/$user->id/enable") ?>">Enable</a>
-                        <?php
-                        } else {
-                        ?>
-                            <a href="<?= baseUrl("users/toggleAccount/$user->id/disable") ?>">Disable</a>
-                        <?php
-                        }
-                        ?>
-                    </td>
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php
+                $i = 1;
+                foreach ($users as $user) {
+                ?>
+                    <tr>
+                        <td><?= $i ?></td>
+                        <td><?= $user->firstname ?></td>
+                        <td><?= $user->lastname ?></td>
+                        <td><?= $user->email ?></td>
+                        <td>
+                            <?php
+                            if ($user->disabled) {
+                            ?>
+                                <a href="<?= baseUrl("users/toggleAccount/$user->id/enable") ?>">Enable</a>
+                            <?php
+                            } else {
+                            ?>
+                                <a href="<?= baseUrl("users/toggleAccount/$user->id/disable") ?>">Disable</a>
+                            <?php
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php
+                    $i++;
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="users pagination">
+        <ul class="pagination">
+            <?php if (!$links["previous"]) { ?>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+            <?php } else {
+            ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $links["previous"] ?>">Previous</a>
+                </li>
+            <?php } ?>
+
             <?php
+            foreach ($links as $page => $link) {
+                if ($page == "previous" || $page == "next" || $page == "current") {
+                    continue;
+                }
+                if ($links["current"] == $page) {
+            ?>
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="<?= $link ?>"><?= $page ?> <span class="sr-only">(current)</span></a>
+                    </li>
+                <?php
+
+                } else {
+                ?>
+                    <li class="page-item"><a class="page-link" href="<?= $link ?>"><?= $page ?></a></li>
+            <?php
+                }
             }
             ?>
-        </tbody>
-    </table>
-    <div class="pagination">
-        <a href="<?= $links["previous"] ?>">previous</a>
-        <?php
-        foreach ($links as $page => $link) {
-            if ($page == "previous") {
-                continue;
-            }
-        ?>
-            <a href="<?= $link ?>"><?= $page ?></a>
-        <?php
-        }
-        ?>
-    </div>
+            <?php if (!$links["next"]) { ?>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Next</a>
+                </li>
+            <?php } else {
+            ?>
+                <li class="page-item">
+                    <a class="page-link" href="<?= $links["next"] ?>">Next</a>
+                </li>
+            <?php } ?>
+        </ul>
+    </nav>
 </div>
 
 <?php

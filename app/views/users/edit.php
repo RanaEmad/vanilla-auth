@@ -4,23 +4,26 @@ use VanillaAuth\Core\Loader;
 
 Loader::view("layout/header");
 ?>
-<div class="content">
-    <form action="<?=baseUrl("users/$user->id")?>" method="POST">
-    <input type="hidden" name="_method" value="PUT" />
+<div class="container">
+    <h1 class="mb-4 text-secondary">Edit User</h1>
+    <form action="<?= baseUrl("users/$user->id") ?>" method="POST">
+        <input type="hidden" name="_method" value="PUT" />
+
         <div class="form-group">
-            <label>fristname</label>
-            <input name="firstname" value="<?=$user->firstname?>" />
+            <label for="firstname">First Name</label>
+            <input name="firstname" type="firstname" class="form-control" id="firstname" value="<?= $user->firstname ?>" />
         </div>
         <div class="form-group">
-            <label>lastname</label>
-            <input name="lastname" value="<?=$user->lastname?>" />
+            <label for="lastname">Last Name</label>
+            <input name="lastname" type="lastname" class="form-control" id="lastname" value="<?= $user->lastname ?>" />
         </div>
         <div class="form-group">
-            <label>email</label>
-            <input name="email" value="<?=$user->email?>" />
+            <label for="email">Email address</label>
+            <input name="email" type="email" class="form-control" id="email" value="<?= $user->email ?>" />
         </div>
+
         <div class="form-group">
-            <input name="submit" type="submit" value="Submit" />
+            <input class="btn btn-info" name="submit" type="submit" value="Submit" />
         </div>
 
     </form>

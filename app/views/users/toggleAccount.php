@@ -4,18 +4,23 @@ use VanillaAuth\Core\Loader;
 
 Loader::view("layout/header");
 ?>
-<div class="content">
+<div class="container">
 
+    <div class="card bg-light mb-3">
+        <h5 class="card-header text-uppercase text-secondary"><?= $state ?> Account</h5>
+        <div class="card-body">
+            <form action="<?= baseUrl("users/toggleAccount/$user->id") ?>" method="POST">
+                <input type="hidden" name="_method" value="PUT" />
+                <input type="hidden" name="disabled" value="<?= $disabled ?>" />
+                <p class="card-title"> Are you sure you want to <?= $state . " " . $user->firstname . " " . $user->lastname . "'s account?" ?> </p>
+                <div class="form-group">
+                    <input class="btn btn-danger" name="submit" type="submit" value="<?= strtoupper($state) ?>" />
+                </div>
 
-    <form action="<?= baseUrl("users/toggleAccount/$user->id") ?>" method="POST">
-    <input type="hidden" name="_method" value="PUT"/>
-        <input type="hidden" name="disabled" value="<?=$disabled?>"/>
-        Are you sure you want to <?=$state." ".$user->firstname." ".$user->lastname."'s account?"?> 
-        <div class="form-group">
-            <input name="submit" type="submit" value="<?=$state?>" />
+            </form>
         </div>
-
-    </form>
+    </div>
+    
 </div>
 
 <?php

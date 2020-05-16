@@ -55,14 +55,14 @@ class UserController
                 "password" => password_hash(Request::post("password"), PASSWORD_DEFAULT)
             ];
             $this->userModel->insert($data);
-            redirect("users/register");
+            redirect("users/auth/register");
         }
     }
 
     public function edit($id)
     {
-        $user= $this->userModel->getOne($id);
-        Loader::view("users/edit",compact("user"));
+        $user = $this->userModel->getOne($id);
+        Loader::view("users/edit", compact("user"));
     }
 
     public function update($id)
@@ -83,7 +83,7 @@ class UserController
                 "lastname" => Request::put("lastname"),
                 "email" => Request::put("email")
             ];
-            $this->userModel->update($id,$data);
+            $this->userModel->update($id, $data);
             redirect("users/m/profile");
         }
     }
@@ -119,7 +119,7 @@ class UserController
 
     public function resetPassword($id)
     {
-        Loader::view("users/resetPassword",compact("id"));
+        Loader::view("users/resetPassword", compact("id"));
     }
 
     public function updateResetPassword($id)
@@ -145,7 +145,7 @@ class UserController
                 redirect("users/profile");
             } else {
                 Session::setKey("error", "Your old password didn't match");
-                redirect("users/resetPassword/$id");
+                redirect("users/auth/resetPassword/$id");
             }
         }
     }

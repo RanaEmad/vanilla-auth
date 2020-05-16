@@ -4,23 +4,26 @@ use VanillaAuth\Core\Loader;
 
 Loader::view("layout/header");
 ?>
-<div class="content">
-    <form action="<?= baseUrl("users/resetPassword/$id") ?>" method="POST">
+<div class="container">
+<h1 class="mb-4 text-secondary">Reset Password</h1>
+    <form action="<?= baseUrl("users/auth/resetPassword/$id") ?>" method="POST">
         <input type="hidden" name="_method" value="PUT" />
+
         <div class="form-group">
-            <label>Old Password</label>
-            <input name="oldPassword" type="password" />
+            <label for="oldPassword">Old Password</label>
+            <input name="oldPassword" type="password" class="form-control" id="oldPassword">
         </div>
         <div class="form-group">
-            <label>New Password</label>
-            <input name="newPassword" type="password" />
+            <label for="newPassword">New Password</label>
+            <input name="newPassword" type="password" class="form-control" id="newPassword">
         </div>
         <div class="form-group">
-            <label>Match Password</label>
-            <input name="matchPassword" type="password" />
+            <label for="matchPassword">Match Password</label>
+            <input name="matchPassword" type="password" class="form-control" id="matchPassword">
         </div>
+
         <div class="form-group">
-            <input name="submit" type="submit" value="Submit" />
+            <input class="btn btn-info" name="submit" type="submit" value="Submit" />
         </div>
     </form>
 </div>
