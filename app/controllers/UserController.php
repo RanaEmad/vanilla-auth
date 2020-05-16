@@ -28,6 +28,12 @@ class UserController
         ];
         Loader::view("users/index", $data);
     }
+
+    public function show($id)
+    {
+        $user = $this->userModel->getOne($id);
+        Loader::view("users/profile", compact("user"));
+    }
     public function create()
     {
         Loader::view("users/register");
