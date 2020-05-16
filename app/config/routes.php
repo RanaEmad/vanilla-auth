@@ -12,3 +12,5 @@ Router::put("users/resetPassword/:id:", "UserController@updateResetPassword");
 Router::get("users", "UserController@index");
 Router::get("users/toggleAccount/:id:/:state:", "UserController@toggleAccount");
 Router::put("users/toggleAccount/:id:", "UserController@updateToggleAccount");
+
+Router::get("countries", "CountryController@index");
