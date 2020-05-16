@@ -59,6 +59,35 @@ class UserController
         }
     }
 
+    public function edit($id)
+    {
+        $user= $this->userModel->getOne($id);
+        Loader::view("users/edit",compact("user"));
+    }
+
+    public function update($id)
+    {
+        $validator = new Validator();
+        $validation = $validator->make(Request::put(), [
+            "firstname" => "required|max:20",
+            "lastname" => "required|max:20",
+            "email" => "required|email|max:50"
+        ]);
+        $validation->validate();
+        if ($validation->fails()) {
+            $errors = $validation->errors();
+            print_r($errors->firstOfAll());
+        } else {
+            $data = [
+                "firstname" => Request::put("firstname"),
+                "lastname" => Request::put("lastname"),
+                "email" => Request::put("email")
+            ];
+            $this->userModel->update($id,$data);
+            redirect("users/m/profile");
+        }
+    }
+
     public function toggleAccount($id, $state)
     {
         $disabled = 0;
