@@ -33,8 +33,14 @@ class Request
         return $get;
     }
 
-    public static function put($attribute=NULL){
-        parse_str(file_get_contents("php://input"),$put);
+    public static function put($attribute = NULL)
+    {
+        $put = [];
+        if (array_key_exists("_method", $_REQUEST) && strtolower($_REQUEST["_method"] == "put")) {
+            $put = $_POST;
+        } else {
+            parse_str(file_get_contents("php://input"), $put);
+        }
         if ($attribute) {
             if (array_key_exists($attribute, $put)) {
                 return htmlspecialchars(trim($put[$attribute]));
