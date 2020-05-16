@@ -32,4 +32,19 @@ class Request
         }
         return $get;
     }
+
+    public static function put($attribute=NULL){
+        parse_str(file_get_contents("php://input"),$put);
+        if ($attribute) {
+            if (array_key_exists($attribute, $put)) {
+                return htmlspecialchars(trim($put[$attribute]));
+            }
+            return false;
+        }
+        $putAll = [];
+        foreach ($put as $key => $value) {
+            $putAll[$key] = htmlspecialchars(trim($value));
+        }
+        return $putAll;
+    }
 }

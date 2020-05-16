@@ -2,6 +2,8 @@
 
 namespace VanillaAuth\Core;
 
+use VanillaAuth\Middleware\HttpMiddleware;
+
 use function PHPUnit\Framework\matches;
 
 class Router
@@ -42,6 +44,8 @@ class Router
         if ($queryPos !== false) {
             $uri = substr($uri, 0, $queryPos);
         }
+
+        HttpMiddleware::handleCustomMethod($uri);
 
         $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
         foreach (self::$routes[$requestMethod] as $route => $function) {

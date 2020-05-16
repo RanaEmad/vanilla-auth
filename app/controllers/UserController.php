@@ -7,6 +7,7 @@ use VanillaAuth\Core\Loader;
 use VanillaAuth\Core\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
+use GuzzleHttp\Client;
 
 class UserController
 {
@@ -55,5 +56,34 @@ class UserController
             $this->userModel->insert($data);
             redirect("users/register");
         }
+    }
+
+    public function toggleAccount($id, $state)
+    {
+        $disabled = 0;
+        if ($state == "disable") {
+            $disabled = 1;
+        }
+        $user = $this->userModel->getOne($id);
+        if ($user->disabled === $disabled) {
+            echo "account already {$state}d";
+            die;
+        } else {
+            $data = [
+                "user" => $user,
+                "state" => $state,
+                "disabled" => $disabled
+            ];
+            Loader::view("users/toggleAccount", $data);
+        }
+    }
+
+    public function updateToggleAccount($id)
+    {
+        $data = [
+            "disabled" => Request::put("disabled")
+        ];
+        $this->userModel->update($id, $data);
+        redirect("users");
     }
 }

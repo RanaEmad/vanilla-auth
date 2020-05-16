@@ -48,11 +48,8 @@ class MysqlModel
     }
     public function getOne($id)
     {
-        $query = "SELECT * FROM " . $this->table . " WHERE id=" . $id . " and deleted!=1 ;";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch($this->fetchType);
-        return $result;
+        $query = "SELECT * FROM " . $this->table . " WHERE id=" . $id . " ;";
+        return $this->fetchOne($query);
     }
     public function getAll($offset = NULL, $rows = NULL)
     {

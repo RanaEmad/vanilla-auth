@@ -23,7 +23,17 @@ Loader::view("layout/header");
                     <td><?= $user->lastname ?></td>
                     <td><?= $user->email ?></td>
                     <td>
-
+                        <?php
+                        if ($user->disabled) {
+                        ?>
+                            <a href="<?= baseUrl("users/toggleAccount/$user->id/enable") ?>">Enable</a>
+                        <?php
+                        } else {
+                        ?>
+                            <a href="<?= baseUrl("users/toggleAccount/$user->id/disable") ?>">Disable</a>
+                        <?php
+                        }
+                        ?>
                     </td>
                 </tr>
             <?php
@@ -32,17 +42,17 @@ Loader::view("layout/header");
         </tbody>
     </table>
     <div class="pagination">
-    <a href="<?=$links["previous"]?>">previous</a>
-    <?php
-    foreach($links as $page=>$link){
-        if($page=="previous"){
-            continue;
+        <a href="<?= $links["previous"] ?>">previous</a>
+        <?php
+        foreach ($links as $page => $link) {
+            if ($page == "previous") {
+                continue;
+            }
+        ?>
+            <a href="<?= $link ?>"><?= $page ?></a>
+        <?php
         }
-?>
-<a href="<?=$link?>"><?=$page?></a>
-<?php
-    }
-    ?>
+        ?>
     </div>
 </div>
 

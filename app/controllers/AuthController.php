@@ -38,6 +38,9 @@ class AuthController
                 //set error
                 Session::setKey("error", "Invalid Credentials");
                 redirect("users/login");
+            } elseif ($user->disabled === 1) {
+                Session::setKey("error", "Your account is disabled");
+                redirect("users/login");
             }
             if (password_verify(Request::post("password"), $user->password)) {
                 //set session
