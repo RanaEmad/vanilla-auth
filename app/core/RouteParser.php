@@ -11,6 +11,12 @@ class RouteParser
         $routePattern = "#^$route$#i";
         return $routePattern;
     }
+    public static function replaceRoutetPattern($route)
+    {
+        $variablePattern = "#:[a-z]+:#si";
+        $route = preg_replace($variablePattern, "placeholder", $route);
+        return $route;
+    }
     public static function getController($string)
     {
         $segments = explode("@", $string);

@@ -2,6 +2,7 @@
 
 namespace VanillaAuth\Core;
 
+use Exception;
 use VanillaAuth\Middleware\HttpMiddleware;
 
 use function PHPUnit\Framework\matches;
@@ -9,28 +10,44 @@ use function PHPUnit\Framework\matches;
 class Router
 {
     private static $routes;
-    public function __construct()
-    {
-        self::$routes["get"] = [];
-        self::$routes["post"] = [];
-        self::$routes["put"] = [];
-        self::$routes["delete"] = [];
-    }
     public static function get($route, $function)
     {
+        $route = trim($route, "/");
+        $function = trim($function);
+        self::checkRouteConflict($route, "get");
         self::$routes["get"][$route] = $function;
     }
     public static function post($route, $function)
     {
+        $route = trim($route, "/");
+        $function = trim($function);
         self::$routes["post"][$route] = $function;
     }
     public static function put($route, $function)
     {
+        $route = trim($route, "/");
+        $function = trim($function);
         self::$routes["put"][$route] = $function;
     }
     public static function delete($route, $function)
     {
+        $route = trim($route, "/");
+        $function = trim($function);
         self::$routes["delete"][$route] = $function;
+    }
+
+    public static function checkRouteConflict($uri, $verb)
+    {
+        if (self::$routes && array_key_exists($verb, self::$routes)) {
+            foreach (self::$routes[$verb] as $route => $function) {
+                $uriPattern =  RouteParser::replaceRoutetPattern($uri);
+                $pattern =  RouteParser::construcRoutetPattern($route);
+
+                if (preg_match($pattern, $uriPattern, $macthes)) {
+                    throw new Exception("Route conflict for $uri with $route and needs to be changed");
+                }
+            }
+        }
     }
 
 
@@ -48,6 +65,8 @@ class Router
         HttpMiddleware::handleCustomMethod($uri);
 
         $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
+
+        $found = false;
         foreach (self::$routes[$requestMethod] as $route => $function) {
 
             $pattern =  RouteParser::construcRoutetPattern($route);
@@ -63,7 +82,12 @@ class Router
                 } else {
                     $cont->{$method}();
                 }
+                $found = true;
+                break;
             }
+        }
+        if (!$found) {
+            Loader::view("errors/404");
         }
     }
 }
