@@ -45,6 +45,7 @@ class AuthController
             if (password_verify(Request::post("password"), $user->password)) {
                 //set session
                 $userData = [
+                    "id" => $user->id,
                     "firstname" => $user->firstname,
                     "lastname" => $user->lastname,
                     "email" => $user->email,

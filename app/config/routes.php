@@ -6,6 +6,8 @@ Router::get("users/register", "UserController@create");
 Router::post("users/register", "UserController@store");
 Router::get("users/login", "AuthController@login");
 Router::post("users/login", "AuthController@authenticate");
+Router::get("users/resetPassword/:id:", "UserController@resetPassword");
+Router::put("users/resetPassword/:id:", "UserController@updateResetPassword");
 
 Router::get("users", "UserController@index");
 Router::get("users/toggleAccount/:id:/:state:", "UserController@toggleAccount");

@@ -8,6 +8,7 @@ use VanillaAuth\Core\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
 use GuzzleHttp\Client;
+use VanillaAuth\Core\Session;
 
 class UserController
 {
@@ -85,5 +86,38 @@ class UserController
         ];
         $this->userModel->update($id, $data);
         redirect("users");
+    }
+
+    public function resetPassword($id)
+    {
+        Loader::view("users/resetPassword",compact("id"));
+    }
+
+    public function updateResetPassword($id)
+    {
+        $validator = new Validator();
+        $validation = $validator->make(Request::put(), [
+            "oldPassword" => "required",
+            "newPassword" => "required",
+            "matchPassword" => "required|same:newPassword"
+        ]);
+        $validation->validate();
+        if ($validation->fails()) {
+            $errors = $validation->errors();
+            print_r($errors->firstOfAll());
+        } else {
+            $user = $this->userModel->getOne($id);
+            if (password_verify(Request::put("oldPassword"), $user->password)) {
+
+                $data = [
+                    "password" => password_hash(Request::put("newPassword"), PASSWORD_DEFAULT)
+                ];
+                $this->userModel->update($user->id, $data);
+                redirect("users/profile");
+            } else {
+                Session::setKey("error", "Your old password didn't match");
+                redirect("users/resetPassword/$id");
+            }
+        }
     }
 }
