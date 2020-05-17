@@ -115,6 +115,7 @@ class UserController
 
     public function toggleAccount($id, $state)
     {
+        Session::checkLogin();
         $disabled = 0;
         if ($state == "disable") {
             $disabled = 1;
@@ -122,8 +123,8 @@ class UserController
         $user = $this->userModel->getOne($id);
         Request::validateResource($user);
         if ($user->disabled === $disabled) {
-            echo "account already {$state}d";
-            die;
+            Session::setKey("error", "account already {$state}d");
+            redirect("users");
         } else {
             $data = [
                 "user" => $user,
@@ -146,7 +147,14 @@ class UserController
 
     public function resetPassword($id)
     {
-        Loader::view("users/resetPassword", compact("id"));
+        Session::checkLogin();
+        $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
+        if ($user->id != Session::getKey("id")) {
+            Loader::view("errors/msg", ["msg" => "Unauthorized access"]);
+        } else {
+            Loader::view("users/resetPassword", compact("id"));
+        }
     }
 
     public function updateResetPassword($id)
