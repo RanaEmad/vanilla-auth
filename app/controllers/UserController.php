@@ -19,6 +19,7 @@ class UserController
     }
     public function index()
     {
+        Session::checkLogin();
         $count = $this->userModel->countUsers()->count;
         $pagination = new Pagination("users", $count, 3);
         $users = $this->userModel->getAll($pagination->getOffset(), $pagination->getRows());
@@ -31,7 +32,9 @@ class UserController
 
     public function show($id)
     {
+        Session::checkLogin();
         $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
         Loader::view("users/profile", compact("user"));
     }
     public function create()
@@ -79,7 +82,9 @@ class UserController
 
     public function edit($id)
     {
+        Session::checkLogin();
         $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
         Loader::view("users/edit", compact("user"));
     }
 
@@ -115,6 +120,7 @@ class UserController
             $disabled = 1;
         }
         $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
         if ($user->disabled === $disabled) {
             echo "account already {$state}d";
             die;

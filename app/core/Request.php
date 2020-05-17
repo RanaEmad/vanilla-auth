@@ -53,4 +53,13 @@ class Request
         }
         return $putAll;
     }
+
+    public static function validateResource($resource)
+    {
+        if (!$resource) {
+            http_response_code(400);
+            Loader::view("errors/msg", ["msg" => "Resource Not Found"]);
+            exit();
+        }
+    }
 }

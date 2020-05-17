@@ -48,4 +48,12 @@ class Session
     {
         session_destroy();
     }
+
+    public static function checkLogin()
+    {
+        if (!$_SESSION || !$_SESSION["logged"] == 1 || !$_SESSION["id"]) {
+            self::setKey("error", "Please, log in first");
+            redirect("users/auth/login");
+        }
+    }
 }

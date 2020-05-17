@@ -10,7 +10,8 @@
     "phpunit/phpunit": "^9.1",
     "vlucas/phpdotenv": "^4.1",
     "rakit/validation": "^1.2",
-    "guzzlehttp/guzzle": "^6.5"
+    "guzzlehttp/guzzle": "^6.5",
+    "fzaninotto/faker": "^1.9"
   },
   "license": "MIT",
   "authors": [

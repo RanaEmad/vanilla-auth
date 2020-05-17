@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         verbose="true">
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+        <testsuite name="features">
+            <directory>tests/features</directory>
+        </testsuite>
+        <testsuite name="units">
+            <directory>tests/units</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="BASE_URL" value="http://localhost:8888/vanilla-auth"/>
+   
+    <env name="TEST_DB_HOST" value="localhost"/>
+    <env name="TEST_DB_NAME" value="vanilla-auth-test"/>
+    <env name="TEST_DB_USER" value="root"/>
+    <env name="TEST_DB_PASSWORD" value="root"/>
+    <env name="TEST_DB_PORT" value="8889"/>        
+</php>
+</phpunit>

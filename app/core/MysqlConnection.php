@@ -19,7 +19,11 @@ class MysqlConnection implements DatabaseConnection
     {
         if (!self::$conn) {
             try {
-                self::$conn =  new PDO("mysql:host=" . Config::get("db_host") . ";dbname=" . Config::get("db_name"), Config::get("db_user"), Config::get("db_password"));
+                $port = "";
+                if (Config::get('db_port')) {
+                    $port = ":" . Config::get("db_port");
+                }
+                self::$conn =  new PDO("mysql:host=" . Config::get("db_host") . $port . ";dbname=" . Config::get("db_name"), Config::get("db_user"), Config::get("db_password"));
             } catch (PDOException $exception) {
                 echo "Database connection error: " . $exception->getMessage();
                 die;
