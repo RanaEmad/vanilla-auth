@@ -90,6 +90,9 @@ class UserController
 
     public function update($id)
     {
+        $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
+
         $validator = new Validator();
         $validation = $validator->make(Request::put(), [
             "firstname" => "required|max:20",

@@ -133,7 +133,6 @@ class UserTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("The Firstname maximum is 20", $content);
         $this->assertStringContainsStringIgnoringCase("The lastname maximum is 20", $content);
-        $this->assertStringContainsStringIgnoringCase("The Firstname maximum is 20", $content);
         $this->assertStringContainsStringIgnoringCase("The email maximum is 50", $content);
         $this->assertStringContainsStringIgnoringCase("The password maximum is 50", $content);
     }
@@ -248,6 +247,83 @@ class UserTest extends TestCase
         $this->assertSame(400, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("resource not found", $content);
     }
+    public function testEditSuccess()
+    {
+        $this->logUserIn();
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => "loremepsum",
+                'lastname' => $user["lastname"],
+                'email' => $user["email"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("Data updated successfully!", $content);
+    }
+    public function testEditRequiredParameters()
+    {
+        $this->logUserIn();
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => "",
+                'lastname' => "",
+                'email' => ""
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The firstname is required", $content);
+        $this->assertStringContainsStringIgnoringCase("The lastname is required", $content);
+    }
+    public function testEditMaxCharParameters()
+    {
+        $this->logUserIn();
+        $faker = Factory::create();
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => $faker->lexify(str_repeat("?", 21)),
+                'lastname' => $faker->lexify(str_repeat("?", 21)),
+                'email' => $faker->lexify(str_repeat("?", 51)) . "@dummy.com"
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The Firstname maximum is 20", $content);
+        $this->assertStringContainsStringIgnoringCase("The lastname maximum is 20", $content);
+        $this->assertStringContainsStringIgnoringCase("The email maximum is 50", $content);
+    }
+    public function testEditInvalidEmail()
+    {
+        $this->logUserIn();
+        $faker = Factory::create();
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => "loremepsum"
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
+    }
 
     public function testLoadToggleAccountPageDisable()
     {
@@ -297,7 +373,7 @@ class UserTest extends TestCase
     public function testLoadToggleAccountPageEnableNotLoggedIn()
     {
         $user = UserFactory::create();
-        $uri = $this->baseUrl . "/users/toggleAccount/{$user["id"]}/enable";
+        $uri = $this->baseUrl . "/users/toggleAccount/" . $user["id"] . "/enable";
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar
@@ -388,6 +464,7 @@ class UserTest extends TestCase
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
+        UserFactory::$id = 1;
         $this->client = null;
         $this->jar = null;
     }

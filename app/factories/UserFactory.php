@@ -7,26 +7,28 @@ use VanillaAuth\Models\User;
 
 class UserFactory
 {
+    public static $id = 1;
     public static function create($override = null)
     {
         $faker =  Factory::create();
         $userModel = new User();
         $password = $faker->lexify(str_repeat("?", 8));
         $user = [
-            "firstname" => $faker->name(10),
-            "lastname" => $faker->name(10),
+            "id" => self::$id,
+            "firstname" => $faker->lexify(str_repeat("?", 10)),
+            "lastname" => $faker->lexify(str_repeat("?", 10)),
             "email" => $faker->email(20),
             "password" => password_hash($password, PASSWORD_DEFAULT),
             "disabled" => 0
         ];
-        $id = $userModel->insert($user);
-        $user["id"] = $id;
-        $user["plainPassword"] = $password;
         if ($override) {
             foreach ($override as $key => $value) {
                 $user[$key] = $value;
             }
         }
+        $userModel->insert($user);
+        self::$id++;
+        $user["plainPassword"] = $password;
         return $user;
     }
 

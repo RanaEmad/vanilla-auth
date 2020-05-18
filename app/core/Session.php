@@ -53,7 +53,8 @@ class Session
     {
         if (!$_SESSION || !$_SESSION["logged"] == 1 || !$_SESSION["id"]) {
             self::setKey("error", "Please, log in first");
-            redirect("users/auth/login");
+            return redirect("users/auth/login");
+            exit();
         }
     }
 }
