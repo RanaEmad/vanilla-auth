@@ -14,7 +14,7 @@ use VanillaAuth\Core\Session;
 use VanillaAuth\Factories\UserFactory;
 use VanillaAuth\Models\User;
 
-class Authest extends TestCase
+class AuthTest extends TestCase
 {
     protected $baseUrl;
     protected $db;
