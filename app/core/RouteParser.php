@@ -38,7 +38,7 @@ class RouteParser
         $routeSegments = explode("/", $route);
         $uriSegments = explode("/", $uri);
         foreach ($routeSegments as $index => $value) {
-            if ($value[0] == ":") {
+            if ($value && $value[0] == ":") {
                 $args[] = $uriSegments[$index];
             }
         }

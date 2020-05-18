@@ -2,6 +2,8 @@
 
 use VanillaAuth\Core\Router;
 
+Router::get("/", "AuthController@login");
+
 Router::get("users/auth/register", "UserController@create");
 Router::post("users/auth/register", "UserController@store");
 Router::get("users/auth/login", "AuthController@login");
