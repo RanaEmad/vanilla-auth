@@ -21,7 +21,7 @@ class UserController
     {
         Session::checkLogin();
         $count = $this->userModel->countUsers()->count;
-        $pagination = new Pagination("users", $count, 3);
+        $pagination = new Pagination("users", $count);
         $users = $this->userModel->getAll($pagination->getOffset(), $pagination->getRows());
         $data = [
             "users" => $users,

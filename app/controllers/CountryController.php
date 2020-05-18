@@ -12,7 +12,7 @@ class CountryController
   public function index()
   {
     Session::checkLogin();
-    $api = new CountriesApi(4);
+    $api = new CountriesApi();
     $page = Request::get("page");
     $previous = "";
     $next = "";
