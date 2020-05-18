@@ -125,6 +125,11 @@ class UserController
     public function toggleAccount($id, $state)
     {
         Session::checkLogin();
+        if ($state != "enable" && $state != "disable") {
+            http_response_code(400);
+            Loader::view("errors/msg", ["msg" => "Resource Not Found"]);
+            exit();
+        }
         $disabled = 0;
         if ($state == "disable") {
             $disabled = 1;
