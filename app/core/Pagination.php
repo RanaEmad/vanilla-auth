@@ -4,14 +4,6 @@ namespace VanillaAuth\Core;
 
 class Pagination
 {
-    // public static $rows=3;
-
-
-    // public static function getPages($total)
-    // {
-    //     return ceil($total / self::$rows);
-    // }
-
     protected $uri;
     protected $totalCount;
     protected $rows;
@@ -54,7 +46,7 @@ class Pagination
         $links = [];
         $links[1] = $this->uri . "?page=1";
         for ($i = $currentPage - 4; $i <= $currentPage + 4; $i++) {
-            if ($i >= 1 && $i <= $this->pages) {
+            if ($i > 1 && $i < $this->pages) {
                 $link = $this->uri . "?page=$i";
                 $links[$i] = $link;
             }
@@ -74,7 +66,7 @@ class Pagination
         } else {
             $links["previous"] = "";
         }
-        $links["current"]=$currentPage;
+        $links["current"] = $currentPage;
 
         return $links;
     }
