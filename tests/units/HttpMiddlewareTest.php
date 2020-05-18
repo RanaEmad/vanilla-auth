@@ -11,8 +11,7 @@ class HttpMiddlewareTest extends TestCase
 {
     protected function setUp(): void
     {
-        unset($_REQUEST["_method"]);
-        unset($_SERVER["REQUEST_METHOD"]);
+        $_REQUEST = [];
     }
     public function testHandleCustomMethod()
     {
@@ -29,7 +28,6 @@ class HttpMiddlewareTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($_REQUEST["_method"]);
-        unset($_SERVER["REQUEST_METHOD"]);
+        $_REQUEST = [];
     }
 }

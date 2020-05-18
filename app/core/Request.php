@@ -36,7 +36,7 @@ class Request
     public static function put($attribute = NULL)
     {
         $put = [];
-        if (array_key_exists("_method", $_REQUEST) && strtolower($_REQUEST["_method"] == "put")) {
+        if (array_key_exists("_method", $_REQUEST) && strtolower($_REQUEST["_method"]) == "put") {
             $put = $_POST;
         } else {
             parse_str(file_get_contents("php://input"), $put);
