@@ -4,12 +4,14 @@ namespace VanillaAuth\Controllers;
 
 use VanillaAuth\Core\Loader;
 use VanillaAuth\Core\Request;
+use VanillaAuth\Core\Session;
 use VanillaAuth\Services\CountriesApi;
 
 class CountryController
 {
   public function index()
   {
+    Session::checkLogin();
     $api = new CountriesApi(4);
     $page = Request::get("page");
     $previous = "";
