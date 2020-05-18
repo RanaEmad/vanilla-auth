@@ -32,8 +32,10 @@ class UserFactory
 
     public static function createBulk($n = 1)
     {
+        $users=[];
         for ($i = 1; $i <= $n; $i++) {
-            self::create();
+            $users[]= self::create();
         }
+        return $users;
     }
 }

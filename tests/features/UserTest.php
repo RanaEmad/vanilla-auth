@@ -208,7 +208,7 @@ class UserTest extends TestCase
     public function testLoadResetPasswordPage()
     {
         $user = $this->logUserIn();
-        $uri = $this->baseUrl . "/users/auth/resetPassword/{$user["id"]}";
+        $uri = $this->baseUrl . "/users/auth/resetPassword/".$user["id"];
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar

@@ -53,9 +53,8 @@ class AuthController
                     "logged" => true
                 ];
                 Session::set($userData);
-                redirect("users/$user->id");
+                return redirect("users/$user->id");
             }
-            pd($user);
             //set error invalid credentials
             Session::setKey("error", "Invalid Credentials");
             redirect("users/auth/login");
