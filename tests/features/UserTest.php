@@ -71,6 +71,110 @@ class UserTest extends TestCase
         $this->assertStringContainsStringIgnoringCase("password", $content);
         $this->assertStringContainsStringIgnoringCase("matchPassword", $content);
     }
+    public function testRegisterSuccess()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => $user["email"],
+                'password' => $user["plainPassword"],
+                'matchPassword' => $user["plainPassword"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("first name", $content);
+        $this->assertStringContainsStringIgnoringCase("last name", $content);
+        $this->assertStringContainsStringIgnoringCase("email", $content);
+    }
+    public function testRegisterRequiredParameters()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => "",
+                'lastname' => "",
+                'email' => "",
+                'password' => "",
+                'matchPassword' => ""
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The firstname is required", $content);
+        $this->assertStringContainsStringIgnoringCase("The lastname is required", $content);
+        $this->assertStringContainsStringIgnoringCase("The password is required", $content);
+        $this->assertStringContainsStringIgnoringCase("The matchpassword is required", $content);
+    }
+    public function testRegisterMaxCharParameters()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+        $faker = Factory::create();
+        $password = $faker->lexify(str_repeat("?", 51));
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $faker->lexify(str_repeat("?", 21)),
+                'lastname' => $faker->lexify(str_repeat("?", 21)),
+                'email' => $faker->lexify(str_repeat("?", 51)) . "@dummy.com",
+                'password' => $password,
+                'matchPassword' => $password
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The Firstname maximum is 20", $content);
+        $this->assertStringContainsStringIgnoringCase("The lastname maximum is 20", $content);
+        $this->assertStringContainsStringIgnoringCase("The Firstname maximum is 20", $content);
+        $this->assertStringContainsStringIgnoringCase("The email maximum is 50", $content);
+        $this->assertStringContainsStringIgnoringCase("The password maximum is 50", $content);
+    }
+    public function testRegisterInvalidEmail()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => "loremepsum",
+                'password' => $user["plainPassword"],
+                'matchPassword' => $user["plainPassword"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
+    }
+    public function testRegisterPasswordMismatch()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => $user["email"],
+                'password' => "loremepsum",
+                'matchPassword' => "mismatch"
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The MatchPassword must be same with password", $content);
+    }
     public function testLoadProfilePage()
     {
         $user = $this->logUserIn();
@@ -208,7 +312,7 @@ class UserTest extends TestCase
     public function testLoadResetPasswordPage()
     {
         $user = $this->logUserIn();
-        $uri = $this->baseUrl . "/users/auth/resetPassword/".$user["id"];
+        $uri = $this->baseUrl . "/users/auth/resetPassword/" . $user["id"];
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar
@@ -283,5 +387,8 @@ class UserTest extends TestCase
         $query = "TRUNCATE TABLE users;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
+
+        $this->client = null;
+        $this->jar = null;
     }
 }

@@ -26,20 +26,22 @@ class Authest extends TestCase
         $this->client = new Client(['cookies' => true]);
         $this->jar = new CookieJar();
     }
-    public function testLoadLogin(){
+    public function testLoadLogin()
+    {
         $uri = $this->baseUrl . "/users/auth/login";
 
-        $response=$this->client->request('GET', $uri);
+        $response = $this->client->request('GET', $uri);
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("email", $content);
         $this->assertStringContainsStringIgnoringCase("password", $content);
     }
-    public function testLoginSuccess(){
+    public function testLoginSuccess()
+    {
         $uri = $this->baseUrl . "/users/auth/login";
 
         $user = UserFactory::create();
-        $response=$this->client->request('POST', $uri, [
+        $response = $this->client->request('POST', $uri, [
             'form_params' => [
                 'email' => $user["email"],
                 'password' => $user["plainPassword"]
@@ -52,11 +54,12 @@ class Authest extends TestCase
         $this->assertStringContainsStringIgnoringCase($user["lastname"], $content);
         $this->assertStringContainsStringIgnoringCase($user["email"], $content);
     }
-    public function testLoginInvalidCredentials(){
+    public function testLoginInvalidCredentials()
+    {
         $uri = $this->baseUrl . "/users/auth/login";
 
         $user = UserFactory::create();
-        $response=$this->client->request('POST', $uri, [
+        $response = $this->client->request('POST', $uri, [
             'form_params' => [
                 'email' => $user["email"],
                 'password' => "loremepsum"
@@ -67,10 +70,11 @@ class Authest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("invalid credentials", $content);
     }
-    public function testLoginMissingResource(){
+    public function testLoginMissingResource()
+    {
         $uri = $this->baseUrl . "/users/auth/login";
 
-        $response=$this->client->request('POST', $uri, [
+        $response = $this->client->request('POST', $uri, [
             'form_params' => [
                 'email' => "email@dummy.com",
                 'password' => "loremepsum"
@@ -81,10 +85,13 @@ class Authest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("invalid credentials", $content);
     }
-        protected function tearDown(): void
+    protected function tearDown(): void
     {
         $query = "TRUNCATE TABLE users;";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
+
+        $this->client = null;
+        $this->jar = null;
     }
 }

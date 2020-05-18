@@ -32,16 +32,16 @@ class AuthController
         if ($validation->fails()) {
             $errors = $validation->errors();
             Session::setKey("validationErrors", $errors->firstOfAll());
-            redirect("users/auth/login");
+            return redirect("users/auth/login");
         } else {
             $user = $this->userModel->getUserByEmail(Request::post("email"));
             if (!$user) {
                 //set error
                 Session::setKey("error", "Invalid Credentials");
-                redirect("users/auth/login");
+                return redirect("users/auth/login");
             } elseif ($user->disabled === 1) {
                 Session::setKey("error", "Your account is disabled");
-                redirect("users/auth/login");
+                return redirect("users/auth/login");
             }
             if (password_verify(Request::post("password"), $user->password)) {
                 //set session
@@ -57,7 +57,7 @@ class AuthController
             }
             //set error invalid credentials
             Session::setKey("error", "Invalid Credentials");
-            redirect("users/auth/login");
+            return redirect("users/auth/login");
         }
     }
 }

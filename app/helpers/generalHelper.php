@@ -41,7 +41,7 @@ function flashValidationErrors()
         foreach ($validationErrors as $key => $error) {
             $errors .= "<p>$error</p>";
         }
-        $errors.="</div>";
+        $errors .= "</div>";
         return $errors;
     }
     return "";
