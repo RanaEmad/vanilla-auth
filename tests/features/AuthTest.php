@@ -85,6 +85,37 @@ class Authest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("invalid credentials", $content);
     }
+    public function testLoginRequiredParameters()
+    {
+        $uri = $this->baseUrl . "/users/auth/login";
+
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'email' => "",
+                'password' => ""
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The email is required", $content);
+        $this->assertStringContainsStringIgnoringCase("The password is required", $content);
+    }
+    public function testLoginInvalidEmail()
+    {
+        $uri = $this->baseUrl . "/users/auth/login";
+
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'email' => "loremepsum",
+                'password' => "loremepsum"
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
+    }
     protected function tearDown(): void
     {
         $query = "TRUNCATE TABLE users;";
