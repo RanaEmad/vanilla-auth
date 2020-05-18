@@ -39,11 +39,17 @@ class UserController
     }
     public function create()
     {
+        if (Session::loggedIn()) {
+            return redirect("users/" . Session::loggedIn());
+        }
         Loader::view("users/register");
     }
 
     public function store()
     {
+        if (Session::loggedIn()) {
+            return redirect("users/" . Session::loggedIn());
+        }
         $validator = new Validator();
         $validation = $validator->make(Request::post(), [
             "firstname" => "required|max:20",

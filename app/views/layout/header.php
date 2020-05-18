@@ -18,7 +18,10 @@
             <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="<?= baseUrl("users") ?>">Users</a>
+            <a class="nav-link" href="
+
+
+<?= baseUrl("users") ?>">Users</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="<?= baseUrl("countries") ?>">Countries</a>
@@ -26,15 +29,34 @@
         </ul>
 
         <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="<?= baseUrl("users/auth/login") ?>">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">/</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="<?= baseUrl("users/auth/register") ?>">Register</a>
-          </li>
+          <?php
+
+          use VanillaAuth\Core\Session;
+
+          if (Session::loggedIn()) {
+          ?>
+            <li class="nav-item">
+              <a class="nav-link" href="<?= baseUrl("users/" . Session::loggedIn()) ?>">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">/</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<?= baseUrl("users/auth/logout") ?>">Log Out</a>
+            </li>
+          <?php
+          } else {
+          ?>
+            <li class="nav-item">
+              <a class="nav-link" href="<?= baseUrl("users/auth/login") ?>">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">/</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<?= baseUrl("users/auth/register") ?>">Register</a>
+            </li>
+          <?php } ?>
         </ul>
 
       </div>

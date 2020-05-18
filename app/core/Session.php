@@ -57,4 +57,11 @@ class Session
             exit();
         }
     }
+    public static function loggedIn()
+    {
+        if ($_SESSION && $_SESSION["logged"] == 1 && $_SESSION["id"]) {
+            return $_SESSION["id"];
+        }
+        return false;
+    }
 }

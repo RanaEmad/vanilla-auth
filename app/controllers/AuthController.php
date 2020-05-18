@@ -19,10 +19,16 @@ class AuthController
     }
     public function login()
     {
+        if (Session::loggedIn()) {
+            return redirect("users/" . Session::loggedIn());
+        }
         Loader::view("users/login");
     }
     public function authenticate()
     {
+        if (Session::loggedIn()) {
+            return redirect("users/" . Session::loggedIn());
+        }
         $validator = new Validator();
         $validation = $validator->make(Request::post(), [
             "email" => "required|email",
@@ -59,5 +65,11 @@ class AuthController
             Session::setKey("error", "Invalid Credentials");
             return redirect("users/auth/login");
         }
+    }
+
+    public function logout()
+    {
+        Session::destroy();
+        return redirect("users/auth/login");
     }
 }
