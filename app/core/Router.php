@@ -9,7 +9,7 @@ use function PHPUnit\Framework\matches;
 
 class Router
 {
-    private static $routes;
+    public static $routes;
     public static function get($route, $function)
     {
         $route = trim($route, "/");
@@ -50,17 +50,28 @@ class Router
         }
     }
 
-
-    public static function loadRoute()
+    public static function getUri($baseUrl,$fullUri)
     {
-        $scriptName = trim(trim($_SERVER["SCRIPT_NAME"], basename($_SERVER["SCRIPT_NAME"])), "/");
-        $uri = trim($_SERVER["REQUEST_URI"], "/");
-        $uri = trim(str_replace($scriptName, "", $uri), "/");
+        // $scriptName = trim(trim($serverScriptName, basename($serverScriptName)), "/");
+        // $uri = trim($serverRequestUri, "/");
+        // $uri = trim(str_replace($scriptName, "", $uri), "/");
+        $uri = trim(str_replace($baseUrl, "", $fullUri), "/");
         $queryPos = strpos($uri, "?");
+
         //remove query string
         if ($queryPos !== false) {
             $uri = substr($uri, 0, $queryPos);
         }
+
+        return $uri;
+    }
+
+
+    public static function loadRoute()
+    {
+        $fullUri = array_key_exists("HTTPS", $_SERVER) ? "https" : "http";
+        $fullUri .= "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+        $uri = self::getUri(BASE_URL,$fullUri);
 
         HttpMiddleware::handleCustomMethod($uri);
 
