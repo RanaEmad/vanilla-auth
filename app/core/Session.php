@@ -46,7 +46,9 @@ class Session
     }
     public static function destroy()
     {
-        session_destroy();
+        if ($_SESSION) {
+            session_destroy();
+        }
     }
 
     public static function checkLogin()
