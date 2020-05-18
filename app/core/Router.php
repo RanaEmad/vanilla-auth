@@ -52,9 +52,6 @@ class Router
 
     public static function getUri($baseUrl,$fullUri)
     {
-        // $scriptName = trim(trim($serverScriptName, basename($serverScriptName)), "/");
-        // $uri = trim($serverRequestUri, "/");
-        // $uri = trim(str_replace($scriptName, "", $uri), "/");
         $uri = trim(str_replace($baseUrl, "", $fullUri), "/");
         $queryPos = strpos($uri, "?");
 
@@ -73,7 +70,7 @@ class Router
         $fullUri .= "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
         $uri = self::getUri(BASE_URL,$fullUri);
 
-        HttpMiddleware::handleCustomMethod($uri);
+        HttpMiddleware::handleCustomMethod();
 
         $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
