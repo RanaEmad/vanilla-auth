@@ -1,6 +1,7 @@
 <?php
 
 use VanillaAuth\Core\Loader;
+use VanillaAuth\Core\Request;
 use VanillaAuth\Services\Csrf;
 
 Loader::view("layout/header");
@@ -12,15 +13,15 @@ Loader::view("layout/header");
         <?= Csrf::getCsrfField(); ?>
         <div class="form-group">
             <label for="firstname">First Name</label>
-            <input name="firstname" type="firstname" class="form-control" id="firstname">
+            <input name="firstname" type="firstname" class="form-control" id="firstname" value="<?= Request::post("firstname") ?>">
         </div>
         <div class="form-group">
             <label for="lastname">Last Name</label>
-            <input name="lastname" type="lastname" class="form-control" id="lastname">
+            <input name="lastname" type="lastname" class="form-control" id="lastname" value="<?= Request::post("lastname") ?>">
         </div>
         <div class="form-group">
             <label for="email">Email address</label>
-            <input name="email" type="email" class="form-control" id="email">
+            <input name="email" type="email" class="form-control" id="email" value="<?= Request::post("email") ?>">
         </div>
         <div class="form-group">
             <label for="password">Password</label>

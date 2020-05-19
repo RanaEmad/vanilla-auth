@@ -36,6 +36,13 @@ function flashValidationErrors()
 {
     $validationErrors = Session::getKey("validationErrors");
     Session::unsetKey("validationErrors");
+
+    $data = Session::getKey("postData");
+    if ($data) {
+        $_POST = $data;
+        Session::unsetKey("postData");
+    }
+
     $errors = "<div class='alert alert-danger'> ";
     if ($validationErrors) {
         foreach ($validationErrors as $key => $error) {

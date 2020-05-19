@@ -67,6 +67,7 @@ class UserController
         if ($validation->fails()) {
             $errors = $validation->errors();
             Session::setKey("validationErrors", $errors->firstOfAll());
+            Session::setKey("postData", Request::post());
             return redirect("users/auth/register");
         } else {
             $data = [
