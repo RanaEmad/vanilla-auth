@@ -23,7 +23,7 @@ class AuthController
         if (Session::loggedIn()) {
             return redirect("users/" . Session::loggedIn());
         }
-        Loader::view("users/login");
+        Loader::view("auth/login");
     }
     public function authenticate()
     {

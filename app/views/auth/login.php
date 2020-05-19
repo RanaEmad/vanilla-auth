@@ -18,6 +18,7 @@ Loader::view("layout/header");
             <label for="password">Password</label>
             <input name="password" type="password" class="form-control" id="password">
         </div>
+        <p class="text-secondary">Don't have an account? <a class="text-warning" href="<?= baseUrl("users/auth/register") ?>">Register</a></p>
 
         <div class="form-group">
             <input class="btn btn-info" name="submit" type="submit" value="Submit" />
