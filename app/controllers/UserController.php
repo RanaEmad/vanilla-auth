@@ -7,7 +7,6 @@ use VanillaAuth\Core\Loader;
 use VanillaAuth\Services\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
-use GuzzleHttp\Client;
 use VanillaAuth\Services\UniqueRule;
 use VanillaAuth\Core\MysqlConnection;
 use VanillaAuth\Core\Session;
@@ -134,6 +133,10 @@ class UserController
     public function toggleAccount($id, $state)
     {
         Session::checkLogin();
+        if ($id == Session::getKey("id")) {
+            Session::setKey("error", "You can't $state your own account");
+            redirect("users/$id");
+        }
         if ($state != "enable" && $state != "disable") {
             http_response_code(400);
             Loader::view("errors/msg", ["msg" => "Resource Not Found"]);
@@ -161,6 +164,10 @@ class UserController
     public function updateToggleAccount($id)
     {
         Session::checkLogin();
+        if ($id == Session::getKey("id")) {
+            Session::setKey("error", "You can't enable or disable your own account");
+            redirect("users/$id");
+        }
         $user = $this->userModel->getOne($id);
         Request::validateResource($user);
         Csrf::verifyCsrf();
@@ -200,6 +207,10 @@ class UserController
         Session::checkLogin();
         $user = $this->userModel->getOne($id);
         Request::validateResource($user);
+        if ($user->id != Session::getKey("id")) {
+            Session::setKey("error", "You are not allowed to reset another account's password");
+            redirect("users");
+        }
         $validator = new Validator();
         $validation = $validator->make(Request::put(), [
             "oldPassword" => "required",

@@ -1,6 +1,7 @@
 <?php
 
 use VanillaAuth\Core\Loader;
+use VanillaAuth\Core\Session;
 
 Loader::view("layout/header");
 ?>
@@ -28,16 +29,18 @@ Loader::view("layout/header");
                         <td><?= $user->lastname ?></td>
                         <td><?= $user->email ?></td>
                         <td>
-                        <a class="btn btn-outline-success" href="<?=baseUrl("users/$user->id/edit")?>">Edit</a>
+                            <a class="btn btn-outline-success" href="<?= baseUrl("users/$user->id/edit") ?>">Edit</a>
                             <?php
-                            if ($user->disabled) {
+                            if ($user->id != Session::getKey("id")) {
+                                if ($user->disabled) {
                             ?>
-                                <a class="btn btn-outline-primary" href="<?= baseUrl("users/toggleAccount/$user->id/enable") ?>">Enable</a>
+                                    <a class="btn btn-outline-primary" href="<?= baseUrl("users/toggleAccount/$user->id/enable") ?>">Enable</a>
+                                <?php
+                                } else {
+                                ?>
+                                    <a class="btn btn-outline-primary" href="<?= baseUrl("users/toggleAccount/$user->id/disable") ?>">Disable</a>
                             <?php
-                            } else {
-                            ?>
-                                <a class="btn btn-outline-primary" href="<?= baseUrl("users/toggleAccount/$user->id/disable") ?>">Disable</a>
-                            <?php
+                                }
                             }
                             ?>
                         </td>
