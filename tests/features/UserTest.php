@@ -93,6 +93,25 @@ class UserTest extends TestCase
         $this->assertStringContainsStringIgnoringCase("last name", $content);
         $this->assertStringContainsStringIgnoringCase("email", $content);
     }
+    public function testRegisterNoCsrf()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => $user["email"],
+                'password' => $user["plainPassword"],
+                'matchPassword' => $user["plainPassword"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("access denied", $content);
+    }
     public function testRegisterRequiredParameters()
     {
         $uri = $this->baseUrl . "/users/auth/register";
@@ -270,6 +289,24 @@ class UserTest extends TestCase
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("Data updated successfully!", $content);
+    }
+    public function testEditNoCsrf()
+    {
+        $this->logUserIn();
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => "loremepsum",
+                'lastname' => $user["lastname"],
+                'email' => $user["email"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("access denied", $content);
     }
     public function testEditRequiredParameters()
     {

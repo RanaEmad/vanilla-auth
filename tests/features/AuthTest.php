@@ -55,6 +55,22 @@ class AuthTest extends TestCase
         $this->assertStringContainsStringIgnoringCase($user["lastname"], $content);
         $this->assertStringContainsStringIgnoringCase($user["email"], $content);
     }
+    public function testLoginNoCsrf()
+    {
+        $uri = $this->baseUrl . "/users/auth/login";
+
+        $user = UserFactory::create();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'email' => $user["email"],
+                'password' => $user["plainPassword"]
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("access denied", $content);
+    }
     public function testLoginInvalidCredentials()
     {
         $uri = $this->baseUrl . "/users/auth/login";

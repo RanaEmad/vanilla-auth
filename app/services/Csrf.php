@@ -22,6 +22,7 @@ class Csrf
             Loader::view("errors/msg", ["msg" => "Access Denied"]);
             exit();
         }
+        return true;
     }
     public static function getCsrfField()
     {
