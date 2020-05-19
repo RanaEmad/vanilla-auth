@@ -61,7 +61,7 @@ class Session
     }
     public static function loggedIn()
     {
-        if ($_SESSION && $_SESSION["logged"] == 1 && $_SESSION["id"]) {
+        if ($_SESSION && isset($_SESSION["logged"]) && isset($_SESSION["id"])) {
             return $_SESSION["id"];
         }
         return false;

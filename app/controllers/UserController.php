@@ -9,6 +9,7 @@ use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
 use GuzzleHttp\Client;
 use VanillaAuth\Core\Session;
+use VanillaAuth\Services\Csrf;
 
 class UserController
 {
@@ -50,6 +51,7 @@ class UserController
         if (Session::loggedIn()) {
             return redirect("users/" . Session::loggedIn());
         }
+        Csrf::verifyCsrf();
         $validator = new Validator();
         $validation = $validator->make(Request::post(), [
             "firstname" => "required|max:20",
@@ -96,6 +98,7 @@ class UserController
 
     public function update($id)
     {
+        Csrf::verifyCsrf();
         $user = $this->userModel->getOne($id);
         Request::validateResource($user);
 
@@ -151,6 +154,10 @@ class UserController
 
     public function updateToggleAccount($id)
     {
+        Session::checkLogin();
+        $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
+        Csrf::verifyCsrf();
         $data = [
             "disabled" => Request::put("disabled")
         ];
@@ -173,6 +180,10 @@ class UserController
 
     public function updateResetPassword($id)
     {
+        Csrf::verifyCsrf();
+        Session::checkLogin();
+        $user = $this->userModel->getOne($id);
+        Request::validateResource($user);
         $validator = new Validator();
         $validation = $validator->make(Request::put(), [
             "oldPassword" => "required",
@@ -185,7 +196,6 @@ class UserController
             Session::setKey("validationErrors", $errors->firstOfAll());
             return redirect("users/$id");
         } else {
-            $user = $this->userModel->getOne($id);
             if (password_verify(Request::put("oldPassword"), $user->password)) {
 
                 $data = [
@@ -193,7 +203,7 @@ class UserController
                 ];
                 $this->userModel->update($user->id, $data);
                 Session::setKey("success", "Password updated successfully!");
-                return redirect("users/profile");
+                return redirect("users/$user->id");
             } else {
                 Session::setKey("error", "Your old password didn't match");
                 return redirect("users/auth/resetPassword/$id");

@@ -1,6 +1,7 @@
 <?php
 
 use VanillaAuth\Core\Loader;
+use VanillaAuth\Services\Csrf;
 
 Loader::view("layout/header");
 ?>
@@ -8,6 +9,7 @@ Loader::view("layout/header");
     <?= flashValidationErrors() ?>
     <h1 class="mb-4 text-secondary">Login</h1>
     <form action="<?= baseUrl("users/auth/login") ?>" method="POST">
+        <?= Csrf::getCsrfField() ?>
         <div class="form-group">
             <label for="email">Email address</label>
             <input name="email" type="email" class="form-control" id="email">

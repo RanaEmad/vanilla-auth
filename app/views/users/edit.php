@@ -1,6 +1,7 @@
 <?php
 
 use VanillaAuth\Core\Loader;
+use VanillaAuth\Services\Csrf;
 
 Loader::view("layout/header");
 ?>
@@ -9,7 +10,7 @@ Loader::view("layout/header");
     <h1 class="mb-4 text-secondary">Edit User</h1>
     <form action="<?= baseUrl("users/$user->id") ?>" method="POST">
         <input type="hidden" name="_method" value="PUT" />
-
+        <?= Csrf::getCsrfField() ?>
         <div class="form-group">
             <label for="firstname">First Name</label>
             <input name="firstname" type="firstname" class="form-control" id="firstname" value="<?= $user->firstname ?>" />

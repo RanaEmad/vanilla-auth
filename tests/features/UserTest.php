@@ -82,7 +82,8 @@ class UserTest extends TestCase
                 'lastname' => $user["lastname"],
                 'email' => $user["email"],
                 'password' => $user["plainPassword"],
-                'matchPassword' => $user["plainPassword"]
+                'matchPassword' => $user["plainPassword"],
+                'csrf' => $this->getCsrf("/users/auth/register")
             ],
             'cookies' => $this->jar
         ]);
@@ -103,7 +104,8 @@ class UserTest extends TestCase
                 'lastname' => "",
                 'email' => "",
                 'password' => "",
-                'matchPassword' => ""
+                'matchPassword' => "",
+                'csrf' => $this->getCsrf("/users/auth/register")
             ],
             'cookies' => $this->jar
         ]);
@@ -125,7 +127,8 @@ class UserTest extends TestCase
                 'lastname' => $faker->lexify(str_repeat("?", 21)),
                 'email' => $faker->lexify(str_repeat("?", 51)) . "@dummy.com",
                 'password' => $password,
-                'matchPassword' => $password
+                'matchPassword' => $password,
+                'csrf' => $this->getCsrf("/users/auth/register")
             ],
             'cookies' => $this->jar
         ]);
@@ -147,7 +150,8 @@ class UserTest extends TestCase
                 'lastname' => $user["lastname"],
                 'email' => "loremepsum",
                 'password' => $user["plainPassword"],
-                'matchPassword' => $user["plainPassword"]
+                'matchPassword' => $user["plainPassword"],
+                'csrf' => $this->getCsrf("/users/auth/register")
             ],
             'cookies' => $this->jar
         ]);
@@ -166,7 +170,8 @@ class UserTest extends TestCase
                 'lastname' => $user["lastname"],
                 'email' => $user["email"],
                 'password' => "loremepsum",
-                'matchPassword' => "mismatch"
+                'matchPassword' => "mismatch",
+                'csrf' => $this->getCsrf("/users/auth/register")
             ],
             'cookies' => $this->jar
         ]);
@@ -257,7 +262,8 @@ class UserTest extends TestCase
             'form_params' => [
                 'firstname' => "loremepsum",
                 'lastname' => $user["lastname"],
-                'email' => $user["email"]
+                'email' => $user["email"],
+                'csrf' => $this->getCsrf("/users/" . $user["id"] . "/edit")
             ],
             'cookies' => $this->jar
         ]);
@@ -275,7 +281,8 @@ class UserTest extends TestCase
             'form_params' => [
                 'firstname' => "",
                 'lastname' => "",
-                'email' => ""
+                'email' => "",
+                'csrf' => $this->getCsrf("/users/" . $user["id"] . "/edit")
             ],
             'cookies' => $this->jar
         ]);
@@ -295,7 +302,8 @@ class UserTest extends TestCase
             'form_params' => [
                 'firstname' => $faker->lexify(str_repeat("?", 21)),
                 'lastname' => $faker->lexify(str_repeat("?", 21)),
-                'email' => $faker->lexify(str_repeat("?", 51)) . "@dummy.com"
+                'email' => $faker->lexify(str_repeat("?", 51)) . "@dummy.com",
+                'csrf' => $this->getCsrf("/users/" . $user["id"] . "/edit")
             ],
             'cookies' => $this->jar
         ]);
@@ -316,7 +324,8 @@ class UserTest extends TestCase
             'form_params' => [
                 'firstname' => $user["firstname"],
                 'lastname' => $user["lastname"],
-                'email' => "loremepsum"
+                'email' => "loremepsum",
+                'csrf' => $this->getCsrf("/users/" . $user["id"] . "/edit")
             ],
             'cookies' => $this->jar
         ]);
@@ -452,11 +461,23 @@ class UserTest extends TestCase
         $this->client->request('POST', $uri, [
             'form_params' => [
                 'email' => $user["email"],
-                'password' => $user["plainPassword"]
+                'password' => $user["plainPassword"],
+                'csrf' => $this->getCsrf("/users/auth/login")
             ],
             'cookies' => $this->jar
         ]);
         return $user;
+    }
+    protected function getCsrf($uri)
+    {
+        $uri = $this->baseUrl . $uri;
+
+        $response = $this->client->request('GET', $uri, ['cookies' => $this->jar]);
+        $content = $response->getBody()->getContents();
+        $pattern = '/<input(.*?) type=\"hidden\" name=\"csrf\"(.*)value=\"(.*?)\" /i';
+        preg_match($pattern, $content, $matches);
+        $token = $matches[3];
+        return $token;
     }
     protected function tearDown(): void
     {

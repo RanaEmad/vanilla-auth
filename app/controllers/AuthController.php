@@ -7,6 +7,7 @@ use VanillaAuth\Core\Loader;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Core\Session;
 use VanillaAuth\Models\User;
+use VanillaAuth\Services\Csrf;
 
 class AuthController
 {
@@ -29,6 +30,7 @@ class AuthController
         if (Session::loggedIn()) {
             return redirect("users/" . Session::loggedIn());
         }
+        Csrf::verifyCsrf();
         $validator = new Validator();
         $validation = $validator->make(Request::post(), [
             "email" => "required|email",

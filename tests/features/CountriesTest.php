@@ -69,11 +69,23 @@ class CountryTest extends TestCase
         $this->client->request('POST', $uri, [
             'form_params' => [
                 'email' => $user["email"],
-                'password' => $user["plainPassword"]
+                'password' => $user["plainPassword"],
+                'csrf' => $this->getCsrf("/users/auth/login")
             ],
             'cookies' => $this->jar
         ]);
         return $user;
+    }
+    protected function getCsrf($uri)
+    {
+        $uri = $this->baseUrl . $uri;
+
+        $response = $this->client->request('GET', $uri, ['cookies' => $this->jar]);
+        $content = $response->getBody()->getContents();
+        $pattern = '/<input(.*?) type=\"hidden\" name=\"csrf\"(.*)value=\"(.*?)\" /i';
+        preg_match($pattern, $content, $matches);
+        $token = $matches[3];
+        return $token;
     }
     protected function tearDown(): void
     {
