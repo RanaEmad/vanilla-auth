@@ -8,6 +8,8 @@ use VanillaAuth\Core\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
 use GuzzleHttp\Client;
+use VanillaAuth\Services\UniqueRule;
+use VanillaAuth\Core\MysqlConnection;
 use VanillaAuth\Core\Session;
 use VanillaAuth\Services\Csrf;
 
@@ -53,10 +55,11 @@ class UserController
         }
         Csrf::verifyCsrf();
         $validator = new Validator();
+        $validator->addValidator('unique', new UniqueRule(MysqlConnection::getConnection()));
         $validation = $validator->make(Request::post(), [
             "firstname" => "required|max:20",
             "lastname" => "required|max:20",
-            "email" => "required|email|max:50",
+            "email" => "required|email|max:50|unique:users,email",
             "password" => "required|max:50",
             "matchPassword" => "required|same:password"
         ]);
@@ -103,10 +106,11 @@ class UserController
         Request::validateResource($user);
 
         $validator = new Validator();
+        $validator->addValidator('unique', new UniqueRule(MysqlConnection::getConnection()));
         $validation = $validator->make(Request::put(), [
             "firstname" => "required|max:20",
             "lastname" => "required|max:20",
-            "email" => "required|email|max:50"
+            "email" => "required|email|max:50|unique:users,email,$user->email"
         ]);
         $validation->validate();
         if ($validation->fails()) {

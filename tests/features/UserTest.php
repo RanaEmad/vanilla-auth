@@ -178,6 +178,27 @@ class UserTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
     }
+    public function testRegisterDuplicateEmail()
+    {
+        $uri = $this->baseUrl . "/users/auth/register";
+
+        $user = UserFactory::make();
+        $duplicateUser = UserFactory::create();
+        $response = $this->client->request('POST', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => $duplicateUser["email"],
+                'password' => $user["plainPassword"],
+                'matchPassword' => $user["plainPassword"],
+                'csrf' => $this->getCsrf("/users/auth/register")
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("Email " . $duplicateUser["email"] . " already exists", $content);
+    }
     public function testRegisterPasswordMismatch()
     {
         $uri = $this->baseUrl . "/users/auth/register";
@@ -369,6 +390,27 @@ class UserTest extends TestCase
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
+    }
+    public function testEditDuplicateEmail()
+    {
+        $this->logUserIn();
+        $faker = Factory::create();
+        $user = UserFactory::create();
+        $duplicateUser = UserFactory::create();
+        $uri = $this->baseUrl . "/users/" . $user["id"];
+
+        $response = $this->client->request('PUT', $uri, [
+            'form_params' => [
+                'firstname' => $user["firstname"],
+                'lastname' => $user["lastname"],
+                'email' => $duplicateUser["email"],
+                'csrf' => $this->getCsrf("/users/" . $user["id"] . "/edit")
+            ],
+            'cookies' => $this->jar
+        ]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("Email " . $duplicateUser["email"] . " already exists", $content);
     }
 
     public function testLoadToggleAccountPageDisable()
