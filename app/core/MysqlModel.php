@@ -2,8 +2,6 @@
 
 namespace VanillaAuth\Core;
 
-use PDO;
-
 class MysqlModel
 {
 
@@ -53,7 +51,7 @@ class MysqlModel
     }
     public function getAll($offset = NULL, $rows = NULL)
     {
-        if ($offset!==NULL && $rows!==NULL) {
+        if ($offset !== NULL && $rows !== NULL) {
             $query = "SELECT * FROM " . $this->table . " LIMIT $offset,$rows ;";
         } else {
             $query = "SELECT * FROM " . $this->table . " ;";

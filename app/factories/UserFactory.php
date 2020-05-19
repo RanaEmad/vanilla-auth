@@ -44,7 +44,6 @@ class UserFactory
     public static function make($override = null)
     {
         $faker =  Factory::create();
-        $userModel = new User();
         $password = "randompassword";
         $user = [
             "firstname" => $faker->name,

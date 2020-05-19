@@ -36,6 +36,7 @@ class Request
     public static function put($attribute = NULL)
     {
         $put = [];
+        //handle spoofing
         if (array_key_exists("_method", $_REQUEST) && strtolower($_REQUEST["_method"]) == "put") {
             $put = $_POST;
         } else {

@@ -2,6 +2,9 @@
 
 use VanillaAuth\Core\Router;
 
+//To match dynamic variables in the uri they have to be inclosed between 2 colons ex: "user/:id:"
+//The controller preceds the method and they are both separated by @
+
 Router::get("/", "AuthController@login");
 
 Router::get("users/auth/register", "UserController@create");

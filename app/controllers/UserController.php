@@ -74,7 +74,8 @@ class UserController
                 "firstname" => Request::post("firstname"),
                 "lastname" => Request::post("lastname"),
                 "email" => Request::post("email"),
-                "password" => password_hash(Request::post("password"), PASSWORD_DEFAULT)
+                "password" => password_hash(Request::post("password"), PASSWORD_DEFAULT),
+                "disabled" => 0
             ];
             $id = $this->userModel->insert($data);
             //set session

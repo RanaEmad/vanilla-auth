@@ -5,8 +5,6 @@ namespace VanillaAuth\Core;
 use Exception;
 use VanillaAuth\Middleware\HttpMiddleware;
 
-use function PHPUnit\Framework\matches;
-
 class Router
 {
     public static $routes;
@@ -50,7 +48,7 @@ class Router
         }
     }
 
-    public static function getUri($baseUrl,$fullUri)
+    public static function getUri($baseUrl, $fullUri)
     {
         $uri = trim(str_replace($baseUrl, "", $fullUri), "/");
         $queryPos = strpos($uri, "?");
@@ -66,10 +64,12 @@ class Router
 
     public static function loadRoute()
     {
+        //construct full uri
         $fullUri = array_key_exists("HTTPS", $_SERVER) ? "https" : "http";
         $fullUri .= "://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
-        $uri = self::getUri(BASE_URL,$fullUri);
+        $uri = self::getUri(BASE_URL, $fullUri);
 
+        //handling method spoofing
         HttpMiddleware::handleCustomMethod();
 
         $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);

@@ -2,9 +2,6 @@
 
 namespace VanillaAuth\Middleware;
 
-use GuzzleHttp\Client;
-use VanillaAuth\Core\Request;
-
 class HttpMiddleware
 {
     public static function handleCustomMethod()
