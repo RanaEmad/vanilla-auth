@@ -1,6 +1,8 @@
 <?php
 
-namespace VanillaAuth\Core;
+namespace VanillaAuth\Services;
+
+use VanillaAuth\Core\Request;
 
 class Pagination
 {

@@ -8,7 +8,7 @@ require "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 require "bootstrap.php";
 
 use PHPUnit\Framework\TestCase;
-use VanillaAuth\Core\Pagination;
+use VanillaAuth\Services\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Middleware\HttpMiddleware;
 

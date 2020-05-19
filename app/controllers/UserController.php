@@ -4,7 +4,7 @@ namespace VanillaAuth\Controllers;
 
 use Rakit\Validation\Validator;
 use VanillaAuth\Core\Loader;
-use VanillaAuth\Core\Pagination;
+use VanillaAuth\Services\Pagination;
 use VanillaAuth\Core\Request;
 use VanillaAuth\Models\User;
 use GuzzleHttp\Client;
