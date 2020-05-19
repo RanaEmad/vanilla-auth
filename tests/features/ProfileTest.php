@@ -4,18 +4,14 @@ namespace VanillaAuth\Tests;
 
 require "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
-use Faker\Factory;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PHPUnit\Framework\TestCase;
-use VanillaAuth\Core\Config;
 use VanillaAuth\Core\MysqlConnection;
-use VanillaAuth\Core\Session;
 use VanillaAuth\Factories\UserFactory;
-use VanillaAuth\Models\User;
 use VanillaAuth\Traits\GuzzleAuthTrait;
 
-class CountryTest extends TestCase
+class ProfileTest extends TestCase
 {
     use GuzzleAuthTrait;
     protected $baseUrl;
@@ -31,37 +27,41 @@ class CountryTest extends TestCase
         $this->client = new Client(['cookies' => true]);
         $this->jar = new CookieJar();
     }
-    public function testCountriesPage()
+    public function testLoadProfilePage()
     {
-        $this->logUserIn();
-        $uri = $this->baseUrl . "/countries";
+        $user = $this->logUserIn();
+
+        $uri = $this->baseUrl . "/users/" . $user["id"];
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar
         ]);
-
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsStringIgnoringCase("countries", $content);
-        $this->assertStringContainsStringIgnoringCase("name", $content);
-        $this->assertStringContainsStringIgnoringCase("region", $content);
-        $this->assertStringContainsStringIgnoringCase("currency", $content);
-        $this->assertStringContainsStringIgnoringCase("currency code", $content);
-        $this->assertStringContainsStringIgnoringCase("flag", $content);
+        $this->assertStringContainsStringIgnoringCase($user["firstname"], $content);
+        $this->assertStringContainsStringIgnoringCase($user["lastname"], $content);
+        $this->assertStringContainsStringIgnoringCase($user["email"], $content);
     }
-    public function testCountriesPageNotLoggedIn()
+    public function testLoadProfilePageNotLoggedIn()
     {
-        $uri = $this->baseUrl . "/countries";
+        $user = UserFactory::create();
+        $uri = $this->baseUrl . "/users/{$user['id']}";
 
-        $response = $this->client->request('GET', $uri, [
-            'cookies' => $this->jar
-        ]);
-
+        $response = $this->client->request('GET', $uri);
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("login", $content);
         $this->assertStringContainsStringIgnoringCase("email", $content);
         $this->assertStringContainsStringIgnoringCase("password", $content);
+    }
+    public function testLoadProfilePageMissingResource()
+    {
+        $uri = $this->baseUrl . "/users/1";
+
+        $response = $this->client->request('GET', $uri, ['http_errors' => false]);
+        $content = $response->getBody()->getContents();
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertStringContainsStringIgnoringCase("resource not found", $content);
     }
 
     protected function tearDown(): void

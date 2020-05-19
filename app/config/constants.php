@@ -1,3 +1,3 @@
 <?php
 
-define("BASE_URL", getenv("BASE_URL"));
+define("BASE_URL", trim(getenv("BASE_URL"), "/"));

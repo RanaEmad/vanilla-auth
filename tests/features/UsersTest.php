@@ -4,18 +4,14 @@ namespace VanillaAuth\Tests;
 
 require "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
-use Faker\Factory;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PHPUnit\Framework\TestCase;
-use VanillaAuth\Core\Config;
 use VanillaAuth\Core\MysqlConnection;
-use VanillaAuth\Core\Session;
 use VanillaAuth\Factories\UserFactory;
-use VanillaAuth\Models\User;
 use VanillaAuth\Traits\GuzzleAuthTrait;
 
-class CountryTest extends TestCase
+class UsersTest extends TestCase
 {
     use GuzzleAuthTrait;
     protected $baseUrl;
@@ -31,10 +27,10 @@ class CountryTest extends TestCase
         $this->client = new Client(['cookies' => true]);
         $this->jar = new CookieJar();
     }
-    public function testCountriesPage()
+    public function testLoadUsersPage()
     {
         $this->logUserIn();
-        $uri = $this->baseUrl . "/countries";
+        $uri = $this->baseUrl . "/users";
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar
@@ -42,16 +38,12 @@ class CountryTest extends TestCase
 
         $content = $response->getBody()->getContents();
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsStringIgnoringCase("countries", $content);
-        $this->assertStringContainsStringIgnoringCase("name", $content);
-        $this->assertStringContainsStringIgnoringCase("region", $content);
-        $this->assertStringContainsStringIgnoringCase("currency", $content);
-        $this->assertStringContainsStringIgnoringCase("currency code", $content);
-        $this->assertStringContainsStringIgnoringCase("flag", $content);
+        $this->assertStringContainsStringIgnoringCase("users", $content);
+        $this->assertStringContainsStringIgnoringCase("table", $content);
     }
-    public function testCountriesPageNotLoggedIn()
+    public function testLoadUsersPageNotLoggedIn()
     {
-        $uri = $this->baseUrl . "/countries";
+        $uri = $this->baseUrl . "/users";
 
         $response = $this->client->request('GET', $uri, [
             'cookies' => $this->jar
@@ -63,7 +55,6 @@ class CountryTest extends TestCase
         $this->assertStringContainsStringIgnoringCase("email", $content);
         $this->assertStringContainsStringIgnoringCase("password", $content);
     }
-
     protected function tearDown(): void
     {
         $query = "TRUNCATE TABLE users;";

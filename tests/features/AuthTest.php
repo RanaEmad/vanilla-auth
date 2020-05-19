@@ -13,9 +13,11 @@ use VanillaAuth\Core\MysqlConnection;
 use VanillaAuth\Core\Session;
 use VanillaAuth\Factories\UserFactory;
 use VanillaAuth\Models\User;
+use VanillaAuth\Traits\GuzzleAuthTrait;
 
 class AuthTest extends TestCase
 {
+    use GuzzleAuthTrait;
     protected $baseUrl;
     protected $db;
     protected function setUp(): void
@@ -137,17 +139,7 @@ class AuthTest extends TestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("The Email is not valid email", $content);
     }
-    protected function getCsrf($uri)
-    {
-        $uri = $this->baseUrl . $uri;
 
-        $response = $this->client->request('GET', $uri, ['cookies' => $this->jar]);
-        $content = $response->getBody()->getContents();
-        $pattern = '#<input type="hidden" name="csrf" value="(.*?)"#si';
-        preg_match($pattern, $content, $matches);
-        $token = $matches[1];
-        return $token;
-    }
     protected function tearDown(): void
     {
         $query = "TRUNCATE TABLE users;";
