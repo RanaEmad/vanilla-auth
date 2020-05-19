@@ -158,12 +158,22 @@ class UserController
         $user = $this->userModel->getOne($id);
         Request::validateResource($user);
         Csrf::verifyCsrf();
-        $data = [
-            "disabled" => Request::put("disabled")
-        ];
-        $this->userModel->update($id, $data);
-        Session::setKey("success", "Account updated successfully!");
-        return redirect("users");
+        $validator = new Validator();
+        $validation = $validator->make(Request::put(), [
+            "disabled" => "required"
+        ]);
+        $validation->validate();
+        if ($validation->fails()) {
+            Loader::view("errors/msg", ["msg" => "Access Denied"]);
+            exit();
+        } else {
+            $data = [
+                "disabled" => Request::put("disabled")
+            ];
+            $this->userModel->update($id, $data);
+            Session::setKey("success", "Account updated successfully!");
+            return redirect("users");
+        }
     }
 
     public function resetPassword($id)

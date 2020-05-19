@@ -143,9 +143,9 @@ class AuthTest extends TestCase
 
         $response = $this->client->request('GET', $uri, ['cookies' => $this->jar]);
         $content = $response->getBody()->getContents();
-        $pattern = '/<input(.*?) type=\"hidden\" name=\"csrf\"(.*)value=\"(.*?)\" /i';
+        $pattern = '#<input type="hidden" name="csrf" value="(.*?)"#si';
         preg_match($pattern, $content, $matches);
-        $token = $matches[3];
+        $token = $matches[1];
         return $token;
     }
     protected function tearDown(): void
