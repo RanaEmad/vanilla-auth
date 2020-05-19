@@ -19,4 +19,13 @@ class Config
             throw new Exception("Config key doesn't exist");
         }
     }
+
+    public static function setAll($data)
+    {
+        self::$config = $data;
+    }
+    public static function getAll()
+    {
+        return self::$config;
+    }
 }
