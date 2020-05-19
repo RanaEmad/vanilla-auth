@@ -4,18 +4,14 @@ namespace VanillaAuth\Tests;
 
 require "vendor" . DIRECTORY_SEPARATOR . "autoload.php";
 
-use Faker\Factory;
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;
 use PHPUnit\Framework\TestCase;
-use VanillaAuth\Core\Config;
 use VanillaAuth\Core\MysqlConnection;
-use VanillaAuth\Core\Session;
 use VanillaAuth\Factories\UserFactory;
-use VanillaAuth\Models\User;
 use VanillaAuth\Traits\GuzzleAuthTrait;
 
-class CountryTest extends TestCase
+class CountriesTest extends TestCase
 {
     use GuzzleAuthTrait;
     protected $baseUrl;

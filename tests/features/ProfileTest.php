@@ -56,9 +56,13 @@ class ProfileTest extends TestCase
     }
     public function testLoadProfilePageMissingResource()
     {
-        $uri = $this->baseUrl . "/users/1";
+        $this->logUserIn();
+        $uri = $this->baseUrl . "/users/100";
 
-        $response = $this->client->request('GET', $uri, ['http_errors' => false]);
+        $response = $this->client->request('GET', $uri, [
+            'cookies' => $this->jar,
+            'http_errors' => false
+        ]);
         $content = $response->getBody()->getContents();
         $this->assertSame(400, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("resource not found", $content);

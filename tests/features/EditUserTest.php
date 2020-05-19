@@ -58,9 +58,13 @@ class EditUserTest extends TestCase
     }
     public function testLoadEditPageMissingResource()
     {
-        $uri = $this->baseUrl . "/users/1/edit";
+        $this->logUserIn();
+        $uri = $this->baseUrl . "/users/100/edit";
 
-        $response = $this->client->request('GET', $uri, ['http_errors' => false]);
+        $response = $this->client->request('GET', $uri, [
+            'cookies' => $this->jar,
+            'http_errors' => false
+        ]);
         $content = $response->getBody()->getContents();
         $this->assertSame(400, $response->getStatusCode());
         $this->assertStringContainsStringIgnoringCase("resource not found", $content);

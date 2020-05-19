@@ -13,6 +13,7 @@ function baseUrl($uri = NULL)
 function redirect($uri = NULL)
 {
     header('Location: ' . baseUrl($uri));
+    exit();
 }
 
 function flashMessage($type = "error")

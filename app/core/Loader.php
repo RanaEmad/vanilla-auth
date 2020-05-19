@@ -1,12 +1,15 @@
-<?php 
+<?php
+
 namespace VanillaAuth\Core;
 
-class Loader{
+class Loader
+{
 
-    public static function view($path,$data=NULL){
-        if($data){
-            extract($data,EXTR_OVERWRITE);
+    public static function view($path, $data = NULL)
+    {
+        if ($data) {
+            extract($data, EXTR_OVERWRITE);
         }
-        require_once dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."views".DIRECTORY_SEPARATOR.trim($path,"/").".php";
+        require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . trim($path, "/") . ".php";
     }
 }

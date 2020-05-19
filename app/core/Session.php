@@ -53,7 +53,7 @@ class Session
 
     public static function checkLogin()
     {
-        if (!$_SESSION || !$_SESSION["logged"] == 1 || !$_SESSION["id"]) {
+        if (!$_SESSION || !isset($_SESSION["logged"]) || !isset($_SESSION["id"])) {
             self::setKey("error", "Please, log in first");
             return redirect("users/auth/login");
             exit();
