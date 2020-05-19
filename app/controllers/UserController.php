@@ -204,7 +204,7 @@ class UserController
         if ($validation->fails()) {
             $errors = $validation->errors();
             Session::setKey("validationErrors", $errors->firstOfAll());
-            return redirect("users/$id");
+            return redirect("users/auth/resetPassword/$id");
         } else {
             if (password_verify(Request::put("oldPassword"), $user->password)) {
 
